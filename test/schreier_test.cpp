@@ -1,6 +1,6 @@
 #include "shraer_test.h"
 
-using namespace shraer_sims;
+using namespace schreier_sims;
 
 void shraer_test::test_permutation_mult_id() noexcept {
     const uint32_t n = 5;

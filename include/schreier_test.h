@@ -3,7 +3,7 @@
 #include "autotest.h"
 #include "permutation.h"
 
-class shraer_test: public Test {
+class schreier_test: public Test {
 private:
     void test_permutation_mult_id() noexcept;
 

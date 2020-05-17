@@ -1,6 +1,6 @@
 #include "permutation.h"
 
-using namespace shraer_sims;
+using namespace schreier_sims;
 
 permutation::permutation(std::size_t n_) noexcept: n(n_) {
     storage.resize(n);

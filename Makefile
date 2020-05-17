@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -O2 -Wall -Werror -Wextra -std=c++17 -Iinclude
 
-MAIN = shraer_sims
-TEST = shraer_test
+MAIN = schreier_sims
+TEST = schreier_test
 SRCDIR = src
 TESTDIR = test
 MAINOBJ = obj/main.o

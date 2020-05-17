@@ -5,13 +5,13 @@
 #include <cstdint>
 #include <iostream>
 
-namespace shraer_sims {
+namespace schreier_sims {
     class permutation;
 }
 
 std::ostream& operator<< (std::ostream& os, const shraer_sims::permutation& a);
 
-namespace shraer_sims {
+namespace schreier_sims {
 
     class permutation {
     public:
