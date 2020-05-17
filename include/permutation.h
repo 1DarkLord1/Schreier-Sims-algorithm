@@ -31,9 +31,13 @@ namespace schreier_sims {
 
         permutation operator* (const permutation&) const noexcept;
 
+        permutation& operator*= (const permutation& perm) noexcept;
+
         uint32_t operator* (uint32_t) const noexcept;
 
         permutation inv() const noexcept;
+
+        std:size_t size() const noexcept;
 
         friend std::ostream& (::operator<<) (std::ostream& os, const permutation& a);
 

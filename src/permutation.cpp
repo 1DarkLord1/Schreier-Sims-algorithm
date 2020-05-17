@@ -43,6 +43,10 @@ permutation permutation::operator* (const permutation& perm) const noexcept {
     return new_perm;
 }
 
+permutation& permutation::operator*= (const permutation& perm) noexcept {
+    *this = *this * perm;
+    return *this;
+}
 
 uint32_t permutation::operator* (uint32_t num) const noexcept {
     return storage[num];
@@ -54,6 +58,10 @@ permutation permutation::inv() const noexcept {
         new_perm.storage[storage[i]] = i;
     }
     return new_perm;
+}
+
+std:size_t permutation::size() const noexcept {
+    return n;
 }
 
 std::ostream& operator<< (std::ostream& os, const permutation& a) {
