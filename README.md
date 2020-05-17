@@ -1,1 +1,1 @@
-# Shraer-Sims-algorithm
+# Schreier-Sims-algorithm
