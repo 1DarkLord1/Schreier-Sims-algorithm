@@ -1,19 +1,29 @@
 CXX = g++
-CXXFLAGS = -Wall -Werror -std=c++17 -Iinclude
+CXXFLAGS = -O2 -Wall -Werror -Wextra -std=c++17 -Iinclude
 
-EXE = shraer_sims
+MAIN = shraer_sims
+TEST = shraer_test
 SRCDIR = src
+TESTDIR = test
+MAINOBJ = obj/main.o
 OBJDIR = obj
 
 OBJECTS = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(wildcard $(SRCDIR)/*.cpp))
+TEST_OBJECTS = $(patsubst $(TESTDIR)/%.cpp,$(OBJDIR)/%.o,$(wildcard $(TESTDIR)/*.cpp))
 
-all: $(EXE)
+all: $(MAIN)
 
-$(EXE): $(OBJECTS)
-	$(CXX) $(OBJECTS) -pthread -o $(EXE)
+$(MAIN): $(OBJECTS)
+	$(CXX) $(OBJECTS) -o $(MAIN)
+
+$(TEST): $(TEST_OBJECTS) $(OBJECTS)
+	$(CXX) $(TEST_OBJECTS) $(filter-out $(MAINOBJ), $(OBJECTS)) -o $(TEST)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
-	$(CXX) $(CXXFLAGS) -pthread -c -MMD -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -MMD -o $@ $<
+
+$(OBJDIR)/%.o: $(TESTDIR)/%.cpp | $(OBJDIR)
+	$(CXX) $(CXXFLAGS) -c -MMD -o $@ $<
 
 include $(wildcard $(OBJDIR)/*.d)
 
@@ -21,6 +31,6 @@ $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
 clean:
-	rm -rf $(OBJDIR) $(EXE)
+	rm -rf $(OBJDIR) $(MAIN) $(TEST)
 
 .PHONY: clean all
