@@ -2,8 +2,7 @@
 
 using namespace schreier_sims;
 
-permutation::permutation(std::size_t n_) noexcept: n(n_) {
-    storage.resize(n);
+permutation::permutation(std::size_t n_) noexcept: storage(n_), n(n_) {
     iota(storage.begin(), storage.end(), 0);
 }
 

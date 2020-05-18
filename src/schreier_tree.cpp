@@ -66,3 +66,7 @@ std::vector<std::pair<int, std::size_t>> schreier_tree::get_decomp(uint32_t elem
     }
     return dec;
 }
+
+std::size_t schreier_tree::size() const noexcept {
+    return tree.size() + 1;
+}
