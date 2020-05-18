@@ -2,8 +2,11 @@
 
 using namespace schreier_sims;
 
-schreier_tree::schreier_tree(const std::vector<permutation>& perms_, std::size_t n_, uint32_t base_) noexcept:
+schreier_tree::schreier_tree(const std::vector<permutation>& perms_, std::size_t n_, uint32_t base_):
 perms(perms_), n(n_), base(base_) {
+    if(perms.size() == 0) {
+        throw std::logic_error("Empty set of generator.");
+    }
     build_tree(base);
 }
 
@@ -13,12 +16,12 @@ void schreier_tree::build_tree(uint32_t elem) noexcept {
     while(!q.empty()) {
         elem = q.front();
         q.pop();
-        for(auto& p: perms) {
-            uint32_t new_elem = p * elem;
+        for(std::size_t i = 0; i < perms.size(); i++) {
+            uint32_t new_elem = perms[i] * elem;
             if(tree.find(new_elem) != tree.end() || elem == new_elem || base == new_elem) {
                 continue;
             }
-            tree.insert({new_elem, edge{p, elem}});
+            tree.insert({new_elem, edge{i, elem}});
             q.push(new_elem);
         }
     }
@@ -33,17 +36,33 @@ std::set<uint32_t> schreier_tree::get_orbit() const noexcept {
     return orbit;
 }
 
+
 permutation schreier_tree::get_perm(uint32_t elem) const {
+    std::vector<std::pair<int, std::size_t>> dec;
+    try {
+        dec = get_decomp(elem);
+    }
+    catch(...) {
+        throw;
+    }
+    permutation perm(n);
+    for(auto& p: dec) {
+        perm *= (p.first == -1 ? perms[p.second].inv(): perms[p.second]);
+    }
+    return perm;
+}
+
+std::vector<std::pair<int, std::size_t>> schreier_tree::get_decomp(uint32_t elem) const {
     if(elem == base) {
-        return permutation(n);
+        return {{1, 0}, {-1, 0}};
     }
     if(tree.find(elem) == tree.end()) {
         throw std::runtime_error("Access to the element in schreier tree error.");
     }
-    permutation perm(n);
+    std::vector<std::pair<int, std::size_t>> dec;
     while(tree.find(elem) != tree.end()) {
-        perm *= tree.at(elem).perm;
+        dec.push_back({1, tree.at(elem).idx});
         elem = tree.at(elem).anc;
     }
-    return perm;
+    return dec;
 }
