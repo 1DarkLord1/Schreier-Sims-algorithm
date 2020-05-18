@@ -1,9 +1,12 @@
 #pragma once
 
+#include "permutation.h"
+#include <queue>
+
 namespace schreier_sims {
 class schreier_tree {
 public:
-    schreier_tree(const std::vector<permutation>& perms_, uint32_t base_) noexcept;
+    schreier_tree(const std::vector<permutation>& perms_, std::size_t n_, uint32_t base_) noexcept;
 
     std::set<uint32_t> get_orbit() const noexcept;
 
@@ -19,6 +22,7 @@ private:
     };
     std::map<uint32_t, edge> tree;
     const std::vector<permutation>& perms;
+    std::size_t n;
     uint32_t base;
 };
 }

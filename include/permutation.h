@@ -4,12 +4,14 @@
 #include <numeric>
 #include <cstdint>
 #include <iostream>
+#include <set>
+#include <map>
 
 namespace schreier_sims {
     class permutation;
 }
 
-std::ostream& operator<< (std::ostream& os, const shraer_sims::permutation& a);
+std::ostream& operator<< (std::ostream& os, const schreier_sims::permutation& a);
 
 namespace schreier_sims {
 
@@ -31,13 +33,11 @@ namespace schreier_sims {
 
         permutation operator* (const permutation&) const noexcept;
 
-        permutation& operator*= (const permutation& perm) noexcept;
+        permutation& operator*= (const permutation&) noexcept;
 
         uint32_t operator* (uint32_t) const noexcept;
 
         permutation inv() const noexcept;
-
-        std:size_t size() const noexcept;
 
         friend std::ostream& (::operator<<) (std::ostream& os, const permutation& a);
 

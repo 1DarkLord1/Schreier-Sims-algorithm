@@ -60,10 +60,6 @@ permutation permutation::inv() const noexcept {
     return new_perm;
 }
 
-std:size_t permutation::size() const noexcept {
-    return n;
-}
-
 std::ostream& operator<< (std::ostream& os, const permutation& a) {
     for(auto x: a.storage) {
         os << x << ' ';
