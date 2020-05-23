@@ -39,6 +39,8 @@ namespace schreier_sims {
 
         permutation inv() const noexcept;
 
+        static permutation id(std::size_t n_) const noexcept;
+
         friend std::ostream& (::operator<<) (std::ostream& os, const permutation& a);
 
     private:

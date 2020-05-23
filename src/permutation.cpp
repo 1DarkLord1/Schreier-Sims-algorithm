@@ -65,3 +65,7 @@ std::ostream& operator<< (std::ostream& os, const permutation& a) {
     }
     return os;
 }
+
+permutation permutation::id(std::size_t n_) const noexcept {
+    return permutation(n_);
+}
