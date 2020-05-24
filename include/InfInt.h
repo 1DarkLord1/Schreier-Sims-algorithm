@@ -202,9 +202,10 @@ private:
     void truncateToBase();
     bool equalizeSigns();
     void removeLeadingZeros();
-
+	
+ 	bool pos; // true if number is positive
     std::vector<ELEM_TYPE> val; // number with base FACTOR
-    bool pos; // true if number is positive
+   
 };
 
 inline InfInt::InfInt() : pos(true)

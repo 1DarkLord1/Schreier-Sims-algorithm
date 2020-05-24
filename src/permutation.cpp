@@ -8,8 +8,12 @@ permutation::permutation(std::size_t n_) noexcept: storage(n_), n(n_) {
 
 permutation::permutation(const std::vector<uint32_t>& storage_) noexcept: storage(storage_), n(storage_.size()) {}
 
-bool permutation::operator== (const permutation& perm) noexcept {
+bool permutation::operator== (const permutation& perm) const noexcept {
     return (storage == perm.storage);
+}
+
+bool permutation::operator!= (const permutation& perm) const noexcept {
+    return !(*this == perm);
 }
 
 permutation& permutation::operator= (const permutation& perm) noexcept {
@@ -66,6 +70,10 @@ std::ostream& operator<< (std::ostream& os, const permutation& a) {
     return os;
 }
 
-permutation permutation::id(std::size_t n_) const noexcept {
+bool operator<(const permutation& a, const permutation& b) {
+    return a.storage < b.storage;
+}
+
+permutation permutation::id(std::size_t n_) {
     return permutation(n_);
 }

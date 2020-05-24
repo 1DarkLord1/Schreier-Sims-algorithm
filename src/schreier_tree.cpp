@@ -42,7 +42,7 @@ permutation schreier_tree::get_perm(uint32_t elem) const {
     try {
         dec = get_decomp(elem);
     }
-    catch(...) {
+    catch(std::runtime_error e) {
         throw;
     }
     permutation perm(n);

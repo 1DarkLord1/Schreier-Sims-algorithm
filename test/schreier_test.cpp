@@ -96,6 +96,23 @@ void schreier_test::test_schreier_tree_get_perm_base() noexcept {
     DO_CHECK((t.get_perm(1) == permutation(n)));
 }
 
+void schreier_test::test_get_orbit_id() noexcept {
+    const std::size_t n = 5;
+    std::vector<uint32_t> base = {0, 1, 2, 3, 4};
+    std::vector<permutation> gen = {permutation::id(n)};
+    stab_chain chain(gen, base.begin(), n);
+    DO_CHECK((chain.get_orbit(0) == std::set<uint32_t>{0}));
+}
+
+void schreier_test::test_get_orbit_random_gen() noexcept {
+    const std::size_t n = 5;
+    std::vector<uint32_t> base = {0, 1, 2, 3, 4};
+    std::vector<permutation> gen = {permutation({0, 2, 1, 4, 3}), permutation({1, 2, 0, 3, 4}), permutation({1, 4, 0, 2, 3})};
+    stab_chain chain(gen, base.begin(), n);
+    DO_CHECK((chain.get_orbit(2) == std::set<uint32_t>{1, 2, 3, 4}));
+}
+
+
 void schreier_test::run_all_tests() {
     test_permutation_mult_id();
     test_permutation_mult_random_perm();
@@ -114,4 +131,7 @@ void schreier_test::run_all_tests() {
     test_schreier_tree_get_perm_random_perms();
     test_schreier_tree_get_perm_cycles();
     test_schreier_tree_get_perm_base();
+
+    test_get_orbit_id();
+    test_get_orbit_random_gen();
 }

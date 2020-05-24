@@ -9,17 +9,9 @@ class schreier_tree {
 public:
     schreier_tree(const std::vector<permutation>& perms_, std::size_t n_, uint32_t base_);
 
-    schreier_tree(const schreier_tree&) = delete;
-
-    schreier_tree(schreier_tree&&) = delete;
-
-    schreier_tree& operator= (const schreier_tree&) = delete;
-
-    schreier_tree& operator= (schreier_tree&&) = delete;
-
     std::set<uint32_t> get_orbit() const noexcept;
 
-    std::vector<std::pair<int, std::size_t>>  get_decomp(uint32_t elem) const;
+    std::vector<std::pair<int, std::size_t>> get_decomp(uint32_t elem) const;
 
     permutation get_perm(uint32_t elem) const;
 

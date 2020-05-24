@@ -13,6 +13,8 @@ namespace schreier_sims {
 
 std::ostream& operator<< (std::ostream& os, const schreier_sims::permutation& a);
 
+bool operator< (const schreier_sims::permutation& a, const schreier_sims::permutation& b);
+
 namespace schreier_sims {
 
     class permutation {
@@ -25,7 +27,9 @@ namespace schreier_sims {
 
         permutation(permutation&&) noexcept;
 
-        bool operator== (const permutation&) noexcept;
+        bool operator== (const permutation&) const noexcept;
+
+        bool operator!= (const permutation&) const noexcept;
 
         permutation& operator= (const permutation&) noexcept;
 
@@ -39,9 +43,11 @@ namespace schreier_sims {
 
         permutation inv() const noexcept;
 
-        static permutation id(std::size_t n_) const noexcept;
+        static permutation id(std::size_t n_);
 
         friend std::ostream& (::operator<<) (std::ostream& os, const permutation& a);
+
+        friend bool (::operator<) (const permutation& a, const permutation& b);
 
     private:
         std::vector<uint32_t> storage;
