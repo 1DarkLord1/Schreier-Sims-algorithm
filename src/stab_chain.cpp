@@ -3,11 +3,11 @@
 
 using namespace schreier_sims;
 
-stab_chain(const std::vector<permutation>& group_gen, const std::vector<uint32_t>& base_elems, std::size_t n_):
-n(n_) {
+stab_chain::stab_chain(const std::vector<permutation>& group_gen_, const std::vector<uint32_t>& base_elems, std::size_t n_):
+n(n_), group_gen(group_gen_) {
     for(std::size_t i = 0; i < base_elems.size(); i++) {
         uint32_t cur_base = base_elem[i];
-        const std::vector<permutation>& anc_gen = (i == 0 ? grup_gen: chain[i - 1].gen);
+        const std::vector<permutation>& anc_gen = (i == 0 ? group_gen: chain[i - 1].gen);
         chain.emplace_back(cur_base, tree(anc_gen, n, cur_base));
         chain[i].orbit = std::move(chain[i].tree.get_orbit());
         chain[i].gen = std::move(make_schreier_gen(anc_gen, chain[i].orbit));
@@ -15,40 +15,36 @@ n(n_) {
 }
 
 
-stab_chain stab_chain::get_stab_chain(std::size_t num) const noexcept {
-    std::shared_ptr<stab_chain> cur_stab = std::make_shared<stab_chain>(*this);
-    for(std::size_t i = 0; i < num; i++) {
-        cur_stab = cur_stab->next;
+stab_chain stab_chain::get_stab_chain(std::size_t i) const noexcept {
+    if(i == 0) {
+        return *this;
     }
-    return const_cast<const stab_chain&>(*cur_stab);
+    stab_chain new_chain = *this;
+    new_chain.chain.erase(new_chain.chain.begin(), new_chain.chain.begin() + i);
+    new_chain.group_gen = chain[i - 1].gen;
+    return new_chain;
 }
 
 std::set<uint32_t> stab_chain::get_orbit(std::size_t i) const {
-    auto& chain = get_stab_chain(i);
-    return chain.orbit;
+    return chain[i].orbit;
 }
 
-std::vector<permutation> stab_chain::get_gen(std::size_t num) const {
-    auto& chain = get_stab_chain(num);
-    return chain.gen;
+std::vector<permutation> stab_chain::get_gen(std::size_t i) const {
+    return chain[i].gen;
 }
 
 std::vector<permutation> stab_gen::get_strong_gen() const {
-    std::set<permutation> strong_gen;
-    std::shared_ptr<stab_chain> cur_stab = std::make_shared<stab_chain>(*this);
-    while(cur_stab->next) {
-        strong_gen.insert(cur_stab->anc_gen.begin(), cur_stab->anc_gen.end());
-        cur_stab = cur_stab->next;
+    std::set<permutation> strong_gen(group_gen.begin(), group_gen.end());
+    for(auto& stab: chain) {
+        strong_gen.insert(stab.gen.begin(), stab.gen.end());
     }
-    strong_gen.insert(cur_stab->anc_gen.begin(), cur_stab->anc_gen.end());
     return std::vector<permutation>(strong_gen.begin(), strong_gen.end());
 }
 
 
 std::size_t stab_chain::len() const noexcept {
-    return chain_len;
+    return chain.size();
 }
-
 
 void stab_chain::filter(std::set<permutation>& stab_gen_set) {
     std::set<permutation> small_set;
@@ -78,44 +74,44 @@ std::vector<permutation> stab_chain::make_schreier_gen(const std::vector<permuta
         }
     }
     filter(stab_gen_set);
-    return std::vector<permutaation>(stab_gen_set.begin(), stab_gen_set.end());
+    return std::vector<permutation>(stab_gen_set.begin(), stab_gen_set.end());
 }
 
 bool stab_chain::contain(permutation p) const noexcept {
-    std::shared_ptr<stab_chain> cur_stab = std::make_shared<stab_chain>(*this);
-    while(cur_stab->next) {
-        uint32_t elem = p * cur_stab->base;
+    for(auto& stab: chain) {
+        if(stab.gen == std::vector<permutation>{permutation::id(n)}) {
+            break;
+        }
+        uint32_t elem = p * stab.base;
         permutation tree_p(n);
         try {
-            tree_p = cur_stab->tree.get_perm(elem).inv();
+            tree_p = stab.tree.get_perm(elem).inv();
         }
         catch(std::runtime_error e) {
             return false;
         }
         p = tree_p * p;
-        cur_stab = cur_stab->next;
     }
     return (p == permutation::id(n));
 }
 
 std::vector<std::pair<int, std::size_t>> stab_chain::get_perm_expression(permutation p) const {
     std::vector<std::pair<int, std::size_t>> expr;
-    std::shared_ptr<stab_chain> cur_stab = std::make_shared<stab_chain>(*this);
-    while(cur_stab->next) {
-        uint32_t elem = p * cur_stab->base;
-        std::vector<std::pair<int, std::size_t>> decomp = cur_stab->tree.get_decomp(elem);
+    for(auto& stab: chain) {
+        if(stab.gen == std::vector<permutation>{permutation::id(n)}) {
+            break;
+        }
+        uint32_t elem = p * stab.base;
+        std::vector<std::pair<int, std::size_t>> decomp = stab.tree.get_decomp(elem);
         expr.insert(expr.end(), decomp.begin(), decomp.end());
-        cur_stab = cur_stab->next;
     }
     return expr;
 }
 
 InfInt stab_chain::get_group_size() const {
     InfInt sz = 1;
-    std::shared_ptr<stab_chain> cur_stab = std::make_shared<stab_chain>(*this);
-    while(cur_stab->next) {
-        sz *= cur_stab->orbit.size();
-        cur_stab = cur_stab->next;
+    for(auto& stab: chain) {
+        sz *= stab.orbit.size();
     }
     return sz;
 }

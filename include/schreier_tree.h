@@ -22,11 +22,11 @@ private:
 
 private:
     struct edge {
-        const std::size_t idx;
+        std::size_t idx;
         uint32_t anc;
     };
     std::map<uint32_t, edge> tree;
-    const std::vector<permutation>& perms;
+    std::vector<permutation> perms;
     std::size_t n;
     uint32_t base;
 };

@@ -8,13 +8,13 @@
 namespace schreier_sims {
 class stab_chain {
 public:
-    stab_chain(const std::vector<permutation>& anc_gen_, std::vector<uint32_t>::const_iterator base_it, std::size_t n_);
+    stab_chain(const std::vector<permutation>& group_gen_, const std::vector<uint32_t>& base_elems, std::size_t n_);
 
-    const stab_chain& get_stab_chain(std::size_t num) const noexcept;
+    const stab_chain& get_stab_chain(std::size_t i) const noexcept;
 
     std::set<uint32_t> get_orbit(std::size_t i) const;
 
-    std::vector<permutation> get_gen(std::size_t num) const;
+    std::vector<permutation> get_gen(std::size_t i) const;
 
     std::vector<permutation> get_strong_gen() const;
 
@@ -32,12 +32,15 @@ private:
     void filter(std::set<permutation>& stab_gen);
 
 private:
-    std::size_t n, chain_len = 1;
-    uint32_t base;
-    const std::vector<permutation>& anc_gen;
-    std::vector<permutation> gen;
-    schreier_tree tree;
-    std::set<uint32_t> orbit;
-    std::shared_ptr<stab_chain> next;
+    std::size_t n;
+    std::vector<permutation> group_gen;
+    struct stab {
+        uint32_t base;
+        schreier_tree tree;
+        std::set<uint32_t> orbit;
+        std::vector<permutation> gen;
+
+    };
+    std::vector<stab_node> chain;
 };
 }
