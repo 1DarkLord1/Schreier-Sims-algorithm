@@ -3,18 +3,19 @@
 
 using namespace schreier_sims;
 
-stab_chain::stab_chain(const std::vector<permutation>& anc_gen_, std::vector<uint32_t>::const_iterator base_it, std::size_t n_):
-n(n_), base(*base_it), anc_gen(anc_gen_), tree(anc_gen_, n, base) {
-    orbit = std::move(tree.get_orbit());
-    make_schreier_gen();
-    if(gen != {permutation::id(n)}) {
-        next = std::make_shared<stab_chain>(gen, ++base_it, n);
-        chain_len += next->len();
+stab_chain(const std::vector<permutation>& group_gen, const std::vector<uint32_t>& base_elems, std::size_t n_):
+n(n_) {
+    for(std::size_t i = 0; i < base_elems.size(); i++) {
+        uint32_t cur_base = base_elem[i];
+        const std::vector<permutation>& anc_gen = (i == 0 ? grup_gen: chain[i - 1].gen);
+        chain.emplace_back(cur_base, tree(anc_gen, n, cur_base));
+        chain[i].orbit = std::move(chain[i].tree.get_orbit());
+        chain[i].gen = std::move(make_schreier_gen(anc_gen, chain[i].orbit));
     }
 }
 
 
-const stab_chain& stab_chain::get_stab_chain(std::size_t num) const noexcept {
+stab_chain stab_chain::get_stab_chain(std::size_t num) const noexcept {
     std::shared_ptr<stab_chain> cur_stab = std::make_shared<stab_chain>(*this);
     for(std::size_t i = 0; i < num; i++) {
         cur_stab = cur_stab->next;
@@ -69,7 +70,7 @@ void stab_chain::filter(std::set<permutation>& stab_gen_set) {
     stab_gen_set.swap(small_set);
 }
 
-void stab_chain::make_schreier_gen() {
+std::vector<permutation> stab_chain::make_schreier_gen(const std::vector<permutation>& anc_gen, const std::set<permutation>& orbit) {
     std::set<permutation> stab_gen_set;
     for(auto& perm: anc_gen) {
         for(auto& orb_e: orbit) {
@@ -77,7 +78,7 @@ void stab_chain::make_schreier_gen() {
         }
     }
     filter(stab_gen_set);
-    gen.insert(gen.end(), stab_gen_set.begin(), stab_gen_set.end());
+    return std::vector<permutaation>(stab_gen_set.begin(), stab_gen_set.end());
 }
 
 bool stab_chain::contain(permutation p) const noexcept {
