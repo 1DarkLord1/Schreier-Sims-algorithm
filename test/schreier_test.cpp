@@ -100,7 +100,7 @@ void schreier_test::test_get_orbit_id() noexcept {
     const std::size_t n = 5;
     std::vector<uint32_t> base = {0, 1, 2, 3, 4};
     std::vector<permutation> gen = {permutation::id(n)};
-    stab_chain chain(gen, base.begin(), n);
+    stab_chain chain(gen, base, n);
     DO_CHECK((chain.get_orbit(0) == std::set<uint32_t>{0}));
 }
 
@@ -108,10 +108,45 @@ void schreier_test::test_get_orbit_random_gen() noexcept {
     const std::size_t n = 5;
     std::vector<uint32_t> base = {0, 1, 2, 3, 4};
     std::vector<permutation> gen = {permutation({0, 2, 1, 4, 3}), permutation({1, 2, 0, 3, 4}), permutation({1, 4, 0, 2, 3})};
-    stab_chain chain(gen, base.begin(), n);
-    DO_CHECK((chain.get_orbit(2) == std::set<uint32_t>{1, 2, 3, 4}));
+    stab_chain chain(gen, base, n);
+    DO_CHECK((chain.get_orbit(1) == std::set<uint32_t>{1, 2, 3, 4}));
 }
 
+void schreier_test::test_get_gen_id() noexcept {
+    const std::size_t n = 10;
+    std::vector<uint32_t> base = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    std::vector<permutation> gen = {permutation::id(n)};
+    stab_chain chain(gen, base, n);
+    DO_CHECK((chain.get_gen(2) == std::vector<permutation>{permutation::id(n)}));
+}
+
+void schreier_test::test_get_gen_s3() noexcept {
+    const std::size_t n = 3;
+    std::vector<uint32_t> base = {0, 1, 2};
+    std::vector<permutation> gen = {permutation({1, 0, 2}), permutation({2, 1, 0})};
+    stab_chain chain(gen, base, n);
+    DO_CHECK((chain.get_gen(1) == std::vector<permutation>{permutation({0, 1, 2})}));
+}
+
+void schreier_test::test_contain_id() noexcept {
+    const std::size_t n = 5;
+    std::vector<uint32_t> base = {0, 1, 2, 3, 4};
+    std::vector<permutation> gen = {permutation::id(n)};
+    stab_chain chain(gen, base, n);
+    DO_CHECK((chain.contain(permutation::id(n)) == true));
+}
+
+void schreier_test::test_contain_s3() noexcept {
+    const std::size_t n = 3;
+    std::vector<uint32_t> base = {0, 1, 2};
+    std::vector<permutation> gen = {permutation({1, 0, 2}), permutation({2, 1, 0})};
+    stab_chain chain(gen, base, n);
+    DO_CHECK((chain.contain(permutation({1, 2, 0})) == true));
+}
+
+void schreier_test::test_contain_a4() noexcept {
+
+}
 
 void schreier_test::run_all_tests() {
     test_permutation_mult_id();
@@ -134,4 +169,9 @@ void schreier_test::run_all_tests() {
 
     test_get_orbit_id();
     test_get_orbit_random_gen();
+    test_get_gen_id();
+    test_get_gen_s3();
+    test_contain_id();
+    test_contain_s3();
+    test_contain_a4();
 }

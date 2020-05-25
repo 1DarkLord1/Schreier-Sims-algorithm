@@ -27,6 +27,11 @@ private:
 
     void test_get_orbit_id() noexcept;
     void test_get_orbit_random_gen() noexcept;
+    void test_get_gen_id() noexcept;
+    void test_get_gen_s3() noexcept;
+    void test_contain_id() noexcept;
+    void test_contain_s3() noexcept;
+    void test_contain_a4() noexcept;
 
 public:
     void run_all_tests() override;

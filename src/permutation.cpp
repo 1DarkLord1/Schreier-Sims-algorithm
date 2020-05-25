@@ -70,8 +70,8 @@ std::ostream& operator<< (std::ostream& os, const permutation& a) {
     return os;
 }
 
-bool operator<(const permutation& a, const permutation& b) {
-    return a.storage < b.storage;
+bool permutation::operator< (const permutation& that) const {
+    return storage < that.storage;
 }
 
 permutation permutation::id(std::size_t n_) {
